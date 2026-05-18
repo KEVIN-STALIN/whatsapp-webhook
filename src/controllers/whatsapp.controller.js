@@ -1,8 +1,10 @@
 const whatsappService = require("./../services/whatsapp.service");
 const aiService = require("./../services/aiService");
+const Contacto = require("./../models/Contacto");
+const Producto = require("./../models/Producto");
 
 
-const historialIA = [];
+let historialIA = [];
 async function enviarMensaje(req, res){
     try {
         const { numero, mensaje } = req.body;
@@ -33,10 +35,28 @@ async function recibirMensajeWebhook(req, res) {
         if (!value?.messages) {
             return res.sendStatus(200);
         }
+        console.log(JSON.stringify(entry))
+
+        const nombre = value.contacts[0].profile.name
 
         const message = value.messages[0];
 
         const numero = message.from;
+
+        let contacto = await Contacto.findOne({where: {numero_whatsapp: numero}});
+        if(!contacto){
+            contacto = await Contacto.create({
+                nombre_whatsapp: nombre,
+                numero_whatsapp: numero,
+            });
+        }
+
+        if(contacto.saldo>0){
+            await whatsappService.enviarMensajeWhatsapp(numero, {
+                type: "text",
+                body: "tiene un saldo pendiente de :"+contacto.saldo
+            });
+        }
 
         let mensajeUsuario = "";
 
@@ -148,13 +168,16 @@ async function procesarMensaje(numero, mensajeUsuario) {
         // IA
 
 
+        let productos = await Producto.findAll();
         // 'necesito que determnines la intencion del mensaje de mi cliente, mis intenciones son: ["información", "precios", "servicios", "ubicacion", "horarios"]. como respuesta solo responde la intencion del cliente y no se entiende entonces responde "NOSE".'
-        const resp = await aiService.generarRespuestaAI(mensajeUsuario, historialIA, "Actual como parte del equipo de ventas para ofrecer capacitaciones de postgrado oferta nustros diplomados. responde en no más de 30 palabras e ignora preguntas que no sea de nuestros servicios" );
+        const resp = await aiService.generarRespuestaAI(mensajeUsuario, historialIA, "Actua como parte del equipo de ventas para ofrecer capacitaciones de postgrado oferta nustros diplomados. Además puede ofrecer alguno de nuestros productos que tenemos en stock, responde en no más de 30 palabras e ignora preguntas que no sea de nuestros servicios. nuestros productos son: "+JSON.stringify(productos) );
             console.log(resp.respuesta)
 
-            historialIA.push(...resp.nuevoHistorial.splice(-10));
+            const historialLimitado = resp.nuevoHistorial.splice(-10);
 
-            console.log("*****: HISORIAL:  ",historialIA);
+            historialIA=[];
+            historialIA=historialLimitado;
+
             await whatsappService.enviarMensajeWhatsapp(numero, {
                     type: "text",
                     body: resp.respuesta

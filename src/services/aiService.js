@@ -21,7 +21,8 @@ async function generarRespuestaAI(mensajeUsuario, historialAnterior ,promptSiste
     return {
         respuesta,
         nuevoHistorial: [
-            ...messages,
+            ...historialAnterior,
+            { role: "user", content: mensajeUsuario },
             { role: "assistant", content: respuesta }
         ]
     }
