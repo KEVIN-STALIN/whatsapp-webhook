@@ -3,10 +3,10 @@ POST http://127.0.0.1:3000/api/enviar-mensaje
 Content-Type: application/json
 
 {
-    "numero": "59173277937",
+    "numero": "59164156932",
     "mensaje": {
         "type": "text",
-        "body": "Hola desde Node"
+        "body": "el costo seria de 60bs  "
     }
 }
 
@@ -16,7 +16,7 @@ POST http://127.0.0.1:3000/api/enviar-mensaje
 Content-Type: application/json
 
 {
-    "numero": "59173277937",
+    "numero": "59164156932",
     "mensaje": {
         "type": "image",
         "link": "https://blumbitvirtual.edtics.com/pluginfile.php/5663/course/overviewfiles/Post%20N8N%20%281%29.png",
@@ -29,7 +29,7 @@ POST http://127.0.0.1:3000/api/enviar-mensaje
 Content-Type: application/json
 
 {
-    "numero": "59173277937",
+    "numero": "59164156932",
     "mensaje": {
         "type": "location",
         "latitude": "-16.5",
@@ -44,7 +44,7 @@ POST http://127.0.0.1:3000/api/enviar-mensaje
 Content-Type: application/json
 
 {
-    "numero": "59173277937",
+    "numero": "59164156932",
     "mensaje": {
         "type": "buttons",
        "body": "Qué rol tienes en desarrollo de Software?\n\nElige una opción:",
@@ -61,7 +61,7 @@ POST http://127.0.0.1:3000/api/enviar-mensaje
 Content-Type: application/json
 
 {
-    "numero": "59173277937",
+    "numero": "59164156932",
     "mensaje": {
         "type": "listbuttons",
        "body": "Qué rol tienes en desarrollo de Software?\n\nElige una opción:",
